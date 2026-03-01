@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lua Script Hub - Upload & Library</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #1e1e1e;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 40px);
+        }
+
+        .header {
+            background: #2d2d2d;
+            padding: 0 30px;
+            border-bottom: 2px solid #3d3d3d;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo h1 {
+            color: #00ff88;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .logo p {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 20px 25px;
+            background: transparent;
+            border: none;
+            color: #999;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            color: white;
+        }
+
+        .tab-btn.active {
+            color: #00ff88;
+            border-bottom: 3px solid #00ff88;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Upload Tab */
+        .upload-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #2d2d2d;
+            border-radius: 15px;
+            padding: 30px;
+        }
+
+        .upload-container h2 {
+            color: #00ff88;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 2px solid #3d3d3d;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #00ff88;
+            outline: none;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            height: 300px;
+            padding: 15px;
+            background: #1a1a1a;
+            border: 2px solid #3d3d3d;
+            border-radius: 10px;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            resize: vertical;
+            line-height: 1.5;
+        }
+
+        .form-group textarea:focus {
+            border-color: #00ff88;
+            outline: none;
+        }
+
+        .upload-btn {
+            width: 100%;
+            padding: 18px;
+            background: #00ff88;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .upload-btn:hover {
+            background: #00cc66;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,255,136,0.3);
+        }
+
+        .url-display {
+            margin-top: 30px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #00ff88;
+        }
+
+        .url-label {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .url-box {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            font-size: 14px;
+            word-break: break-all;
+            margin: 10px 0;
+            border: 1px solid #3d3d3d;
+        }
+
+        .copy-btn {
+            padding: 12px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+
+        .copy-btn:hover {
+            background: #0056b3;
+        }
+
+        .copy-btn.loader {
+            background: #00ff88;
+            color: #1a1a1a;
+        }
+
+        .copy-btn.loader:hover {
+            background: #00cc66;
+        }
+
+        /* Library Tab */
+        .library-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .library-header h2 {
+            color: #00ff88;
+            font-size: 28px;
+        }
+
+        .script-count {
+            background: #2d2d2d;
+            padding: 8px 20px;
+            border-radius: 30px;
+            color: #00ff88;
+            font-weight: bold;
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .script-card {
+            background: #2d2d2d;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s;
+            border: 1px solid #3d3d3d;
+        }
+
+        .script-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+            box-shadow: 0 10px 30px rgba(0,255,136,0.1);
+        }
+
+        .script-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .script-name {
+            color: #00ff88;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .script-date {
+            color: #888;
+            font-size: 12px;
+        }
+
+        .script-preview {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            color: #888;
+            max-height: 100px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+            border: 1px solid #3d3d3d;
+        }
+
+        .script-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .card-btn {
+            flex: 1;
+            padding: 10px;
+            background: #1a1a1a;
+            border: 1px solid #3d3d3d;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .card-btn:hover {
+            background: #3d3d3d;
+            border-color: #00ff88;
+        }
+
+        .card-btn.loader {
+            background: #00ff88;
+            color: #1a1a1a;
+        }
+
+        .card-btn.loader:hover {
+            background: #00cc66;
+        }
+
+        .clear-all {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .clear-all:hover {
+            background: #cc0000;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2d2d2d;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            border-left: 3px solid #00ff88;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <h1>LUA SCRIPT HUB</h1>
+                <p>Upload & Share Your Scripts</p>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('upload')">📤 Upload Script</button>
+                <button class="tab-btn" onclick="switchTab('library')">📚 Uploaded Scripts</button>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Upload Tab -->
+            <div id="upload-tab" class="tab-content active">
+                <div class="upload-container">
+                    <h2>📤 Upload New Script</h2>
+                    
+                    <div class="form-group">
+                        <label>📝 Script Name</label>
+                        <input type="text" id="scriptName" placeholder="e.g., Aimbot V2, ESP Hub, GUI Menu..." maxlength="50">
+                    </div>
+
+                    <div class="form-group">
+                        <label>📜 Lua Script</label>
+                        <textarea id="scriptContent" placeholder="-- Paste your Lua script here">-- Welcome to Lua Script Hub
+print("Hello from Lua Script Hub!")
+
+local function main()
+    print("Script loaded successfully!")
+    -- Your awesome script here
+end
+
+main()</textarea>
+                    </div>
+
+                    <button class="upload-btn" onclick="uploadScript()">
+                        <span>⬆️</span> Upload & Generate URL
+                    </button>
+
+                    <div id="urlDisplay" style="display: none;">
+                        <div class="url-display">
+                            <div class="url-label">🔗 Script URL (Open this in browser to see raw script):</div>
+                            <div class="url-box" id="scriptUrl"></div>
+                            <button class="copy-btn" onclick="copyUrl()">
+                                <span>📋</span> Copy URL
+                            </button>
+                            <button class="copy-btn loader" onclick="copyLoader()">
+                                <span>⚡</span> Copy Loader
+                            </button>
+                            <div style="margin-top: 15px; color: #888; font-size: 13px;">
+                                ⚠️ When someone opens this URL in browser, they'll see ONLY the Lua script on a black screen
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Library Tab -->
+            <div id="library-tab" class="tab-content">
+                <div class="library-header">
+                    <h2>📚 Your Uploaded Scripts</h2>
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <span class="script-count" id="scriptCount">0</span>
+                        <button class="clear-all" onclick="clearAllScripts()">
+                            <span>🗑️</span> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <div class="scripts-grid" id="scriptsGrid"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        let scripts = JSON.parse(localStorage.getItem('luaScripts')) || [];
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            if (tab === 'upload') {
+                document.querySelector('.tab-btn').classList.add('active');
+                document.getElementById('upload-tab').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('library-tab').classList.add('active');
+                displayScripts();
+            }
+        }
+
+        function uploadScript() {
+            const name = document.getElementById('scriptName').value.trim();
+            const content = document.getElementById('scriptContent').value.trim();
+
+            if (!name) {
+                showNotification('❌ Please enter a script name!');
+                return;
+            }
+
+            if (!content) {
+                showNotification('❌ Please paste your Lua script!');
+                return;
+            }
+
+            const id = Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const url = window.location.origin + '/raw/' + id;
+
+            const script = {
+                id: id,
+                name: name,
+                content: content,
+                url: url,
+                date: new Date().toLocaleString(),
+                downloads: 0
+            };
+
+            scripts.unshift(script);
+            localStorage.setItem('luaScripts', JSON.stringify(scripts));
+
+            document.getElementById('scriptUrl').textContent = url;
+            document.getElementById('loaderCommand').textContent = `loadstring(game:HttpGet("${url}"))()`;
+            document.getElementById('urlDisplay').style.display = 'block';
+
+            document.getElementById('scriptName').value = '';
+            
+            showNotification('✅ Script uploaded successfully!');
+            updateScriptCount();
+        }
+
+        function displayScripts() {
+            const grid = document.getElementById('scriptsGrid');
+            const countSpan = document.getElementById('scriptCount');
+
+            if (scripts.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 60px; background: #2d2d2d; border-radius: 15px;">
+                        <p style="color: #888; font-size: 20px;">📭 No scripts uploaded yet</p>
+                        <p style="color: #666; margin-top: 15px;">Go to Upload Script tab to add your first script</p>
+                    </div>
+                `;
+                countSpan.textContent = '0';
+                return;
+            }
+
+            countSpan.textContent = scripts.length;
+
+            grid.innerHTML = scripts.map(script => `
+                <div class="script-card">
+                    <div class="script-card-header">
+                        <span class="script-name">${escapeHtml(script.name)}</span>
+                        <span class="script-date">${script.date}</span>
+                    </div>
+                    <div class="script-preview">
+                        ${escapeHtml(script.content.substring(0, 150))}${script.content.length > 150 ? '...' : ''}
+                    </div>
+                    <div class="script-actions">
+                        <button class="card-btn" onclick="copyScriptContent('${script.id}')">
+                            <span>📋</span> Copy Script
+                        </button>
+                        <button class="card-btn loader" onclick="copyScriptLoader('${script.id}')">
+                            <span>⚡</span> Copy Loader
+                        </button>
+                        <button class="card-btn" onclick="deleteScript('${script.id}')" style="color: #ff4444;">
+                            <span>🗑️</span>
+                        </button>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: #666; display: flex; justify-content: space-between;">
+                        <span>📥 ${script.downloads} downloads</span>
+                        <span style="color: #00ff88; cursor: pointer;" onclick="testUrl('${script.url}')">🔗 Test URL</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function copyScriptContent(id) {
+            const script = scripts.find(s => s.id === id);
+            if (script) {
+                navigator.clipboard.writeText(script.content);
+                script.downloads++;
+                localStorage.setItem('luaScripts', JSON.stringify(scripts));
+                showNotification('✅ Script content copied!');
+                displayScripts();
+            }
+        }
+
+        function copyScriptLoader(id) {
+            const script = scripts.find(s => s.id === id);
+            if (script) {
+                const loader = `loadstring(game:HttpGet("${script.url}"))()`;
+                navigator.clipboard.writeText(loader);
+                script.downloads++;
+                localStorage.setItem('luaScripts', JSON.stringify(scripts));
+                showNotification('✅ Loader copied!');
+                displayScripts();
+            }
+        }
+
+        function deleteScript(id) {
+            if (confirm('Delete this script?')) {
+                scripts = scripts.filter(s => s.id !== id);
+                localStorage.setItem('luaScripts', JSON.stringify(scripts));
+                displayScripts();
+                updateScriptCount();
+                showNotification('🗑️ Script deleted');
+            }
+        }
+
+        function clearAllScripts() {
+            if (scripts.length === 0) return;
+            
+            if (confirm('Delete ALL scripts? This cannot be undone!')) {
+                scripts = [];
+                localStorage.setItem('luaScripts', JSON.stringify(scripts));
+                displayScripts();
+                updateScriptCount();
+                showNotification('🗑️ All scripts cleared');
+            }
+        }
+
+        function copyUrl() {
+            const url = document.getElementById('scriptUrl').textContent;
+            navigator.clipboard.writeText(url);
+            showNotification('✅ URL copied!');
+        }
+
+        function copyLoader() {
+            const loader = document.getElementById('loaderCommand').textContent;
+            navigator.clipboard.writeText(loader);
+            showNotification('✅ Loader copied!');
+        }
+
+        function updateScriptCount() {
+            document.getElementById('scriptCount').textContent = scripts.length;
+        }
+
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        function testUrl(url) {
+            window.open(url, '_blank');
+        }
+
+        window.onload = function() {
+            displayScripts();
+            updateScriptCount();
+
+            // Handle raw script URLs
+            const path = window.location.pathname;
+            if (path.startsWith('/raw/')) {
+                const id = path.replace('/raw/', '');
+                const script = scripts.find(s => s.id === id);
+                
+                document.body.innerHTML = '';
+                document.body.style.margin = '0';
+                document.body.style.padding = '20px';
+                document.body.style.background = '#000000';
+                document.body.style.color = '#00ff00';
+                document.body.style.fontFamily = 'Courier New, monospace';
+                document.body.style.fontSize = '14px';
+                document.body.style.whiteSpace = 'pre-wrap';
+                document.body.style.wordWrap = 'break-word';
+                
+                if (script) {
+                    document.body.textContent = script.content;
+                } else {
+                    document.body.textContent = '-- Script not found';
+                }
+            }
+        };
+    </script>
+</body>
+  </html>
